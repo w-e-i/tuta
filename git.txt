@@ -1,0 +1,17 @@
+1.打开终端，git version查看版本
+pwd 打印当前文件夹路径 
+ls 查看当前目录所有文件
+clear 清掉屏幕内容
+cd 切换目录
+mkdir 创建文件夹
+vim 创建文件
+
+
+git init  创建git仓库
+git add 将文件添加到暂存区
+git commit -m "tips" 提交文件
+git status 查看状态
+git log 查看提交记录
+git reflog 查看所有的提交记录
+git reset --hard HEAD^回退到上一个历史版本
+git reset --hard XX 回退到某一个版本号

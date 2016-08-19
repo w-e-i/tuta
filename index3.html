@@ -2,8 +2,20 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<title>锅打灰太狼</title>
+	<script type="text/javascript">
+		if (/Android (\d+\.\d+)/.test(navigator.userAgent)) {
+			var version = parseFloat(RegExp.$1);
+			if (version > 2.3) {
+				var phoneScale = parseInt(window.screen.width) / 320;
+				document.write('<meta name="viewport" content="width=320, minimum-scale = ' + phoneScale + ', maximum-scale = ' + phoneScale + ', target-densitydpi=device-dpi">');
+			} else {
+				document.write('<meta name="viewport" content="width=320, target-densitydpi=device-dpi">');
+			}
+		} else {
+			document.write('<meta name="viewport" content="width=320, user-scalable=no, target-densitydpi=device-dpi">');
+		}
+	</script>
 	<style type="text/css">
 		* {
 			margin:0;
@@ -127,25 +139,31 @@
 		wolf.index = 0;//开始的位置下标
 		wolf.upFlag = true; //是否向上运动的标志位
 		wolf.clickFlag = false;//狼是否被点击的标志位
-		wolf.timer = setInterval(function() {//狼运动的计时器
+		wolf.timer = setInterval(wolfMove,80);
+
+		function wolfMove() {//狼运动的计时器
 			if(wolf.upFlag || wolf.clickFlag) {
 				//默认情况下wolf.upFlag是向上的，点击狼之后也会向上运动
 				wolf.index++;
 			}else {
 				wolf.index--;
 			}
-			if(wolf.index >= 5) {
-				//默认没有点击狼，之后狼退回坑里边
+			if(wolf.index == 5) {
+				//默认没有点击狼，之后等0.5秒狼退回坑里边
 				wolf.upFlag = false;
+				clearInterval(wolf.timer);
+				setTimeout(function() {
+					wolf.timer = setInterval(wolfMove,80);
+				},500)
 			}
 			if(wolf.index >= 9 || wolf.index < 0) {
 				clearInterval(wolf.timer);
 				wolf.remove();//移除狼
 			}
 			wolf.style.backgroundPosition = - 108 * wolf.index + "px 0";
-		},80)
-		//添加点击事件
-		wolf.onclick = function() {
+		}
+		//添加点击事件,在移动设备上，click会有300~400毫秒延迟，改用touchstart
+		wolf.ontouchstart = function() {
 			//判断点击的是小灰灰还是灰太狼
 			if (who == "h") {
 				score += 10;
@@ -155,7 +173,7 @@
 			scoreBar.innerText = score;
 			wolf.clickFlag = true;//表示狼被点击了
 			wolf.index = 5;//切换到狼被打的那帧
-			wolf.onclick = null;//只能打一次狼
+			wolf.ontouchstart = null;//只能打一次狼
 		}
 	}
 
